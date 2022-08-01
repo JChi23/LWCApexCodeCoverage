@@ -1,0 +1,77 @@
+<template>
+
+    <lightning-card title="Code Coverage Report" icon-name="custom:custom14">
+        
+        <div class="slds-p-around_medium lgc-bg">
+            <lightning-input type="text" label="Named Credential" placeholder="Named Credential" onchange={handleCredentialInputChange} required></lightning-input>
+        </div>
+
+        <div class="slds-p-around_medium lgc-bg">
+            <lightning-input type="text" label="File Name" value="Code Coverage" onchange={handleFileOutputChange} required></lightning-input>
+        </div>
+        
+        <button onclick={download} class="btn success">Export to Excel</button>
+    </lightning-card>
+    
+    <lightning-combobox
+    name="apexTestResult"
+    label="Apex Test"
+    placeholder="Select Apex Test Result"
+    options={testRunResultOptions}
+    onchange={handleTestRunResultChange} ></lightning-combobox>
+
+    <p> Overall Coverage: {totalCoverage}</p>
+    <p> Overall Class Coverage: {totalClassCoverage}</p>
+    <p> Overall Trigger Coverage: {totalTriggerCoverage}</p>
+    
+    <lightning-combobox
+    name="apexClass"
+    label="Apex Class"
+    placeholder="Select Apex Classes From Listview"
+    options={classOptions}
+    onchange={handleClassChange} ></lightning-combobox>
+
+    <lightning-combobox
+    name="apexTrigger"
+    label="Apex Trigger"
+    placeholder="Select Apex Triggers From Listview"
+    options={triggerOptions}
+    onchange={handleTriggerChange} ></lightning-combobox>
+    
+
+    <div style="height: 600px; padding: 30px; margin: 15px">
+        <lightning-datatable
+                key-field="id"
+                data={testClasses}
+                columns={testClassColumns}
+                sorted-by={sortBy}
+                sorted-direction={sortDirection}
+                onsort={doTestSorting}
+                hide-checkbox-column="true">
+        </lightning-datatable>
+    </div>
+
+    <div style="height: 600px; padding: 30px; margin: 15px">
+        <lightning-datatable
+                key-field="id"
+                data={apexClasses}
+                columns={apexClassColumns}
+                sorted-by={sortClassBy}
+                sorted-direction={sortClassDirection}
+                onsort={doClassSorting}
+                hide-checkbox-column="true">
+        </lightning-datatable>
+    </div>
+
+    <div style="height: 600px; padding: 30px; margin: 15px">
+        <lightning-datatable
+                key-field="id"
+                data={apexTriggers}
+                columns={apexTriggerColumns}
+                sorted-by={sortBy}
+                sorted-direction={sortDirection}
+                onsort={doTriggerSorting}
+                hide-checkbox-column="true">
+        </lightning-datatable>
+    </div>
+</template>
