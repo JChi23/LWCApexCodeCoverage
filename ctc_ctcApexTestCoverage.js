@@ -1,3 +1,6 @@
+// Jeffrey Chi - 8/2022
+// Built at West Monroe
+// This component pulls and compiles code coverage for classes and triggers as well as  displays test results. One can also export data to a formatted excel sheet.
 import { LightningElement, track } from 'lwc';
 import { loadScript } from "lightning/platformResourceLoader";
 import workbook from "@salesforce/resourceUrl/writeExcel";
