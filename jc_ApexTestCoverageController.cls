@@ -1,22 +1,19 @@
 // Jeffrey Chi - 8/2022
 // Built at West Monroe
 // This component pulls and compiles code coverage for classes and triggers as well as  displays test results. One can also export data to a formatted excel sheet.
-public with sharing class ctc_ctcApexTestCoverageController {
+public with sharing class jc_ApexTestCoverageController {
     @AuraEnabled
     public static List<ApexClass> getClasses(Id listview, string namedCred){
         try {
             System.debug('Getting classes');
             if(string.isBlank(listview)){
-                //return null;
                 return [SELECT Id, Name, CreatedBy.Name, LastModifiedBy.Name FROM ApexClass ORDER BY Name LIMIT 300];
 
             } else {
                 
                 Http http = new Http();
                 HttpRequest request = new HttpRequest();
-                //request.setEndpoint('https://brave-badger-oaqjb6-dev-ed.my.salesforce.com/services/data/v53.0/sobjects/Account/listviews/00B8c00000PF56PEAT/describe');
                 string callout = string.format('{0}{1}{2}{3}{4}',new string[]{'callout:',namedCred,'/services/data/v53.0/tooling/sobjects/ApexClass/listviews/',listview,'/describe'});
-                //request.setEndpoint('callout:TestCovCred/services/data/v53.0/sobjects/Account/listviews/00B8c00000PF56PEAT/describe');
                 System.debug('listview callout ' + callout);
                 request.setEndpoint(callout);
                 request.setMethod('GET');
@@ -30,8 +27,6 @@ public with sharing class ctc_ctcApexTestCoverageController {
                     // Deserialize the JSON string into collections of primitive data types.
                     Map<String, Object> results = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
                     // Cast the values in the 'animals' key as a list
-                    //List<Object> animals = (List<Object>) results.get('query');
-                    //System.debug(results.get('query')); WHERE Id NOT IN (SELECT TracedEntityId FROM TraceFlag)
                     string returnedQuery = '' + results.get('query');//might need to do another callout because listview query uses metadata
                     //System.debug('check '+returnedQuery.contains('ENTITY_TRACE'));
                     if (returnedQuery.contains('ENTITY_TRACE')){
@@ -103,11 +98,7 @@ public with sharing class ctc_ctcApexTestCoverageController {
                 if(response.getStatusCode() == 200) {
                     Map<String, Object> results = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
                     // Deserialize the JSON string into collections of primitive data types.
-                    //List<ApexTrigger> finalReturn = (List<ApexTrigger>) results.get('records');
                     List<ApexTrigger> finalReturn = new List<ApexTrigger>();
-                    //System.debug('records: ' + results.get('records'));
-                    //Map<String, Object> test = (Map<String, Object>) results.get('records');
-                    System.debug('hey');
                     List<Id> triggerList = new List<Id>();
                     for( Object obj : (List<Object>) results.get('records')) {
                         Map<String, Object> objMap = (Map<String, Object>) obj;
@@ -133,7 +124,6 @@ public with sharing class ctc_ctcApexTestCoverageController {
                         errorMsg += objMap.get('message');
                     }
                     if (errorMsg.contains('ENTITY_TRACE')){
-                        //System.debug(returnedQuery.substring(returnedQuery.indexOf('ENTITY_TRACE'),returnedQuery.indexOf('ENTITY_TRACE')+20) + ' test ' + returnedQuery.substring(returnedQuery.indexOf('ENTITY_TRACE'),returnedQuery.indexOf('ENTITY_TRACE')+20).contains('true'));
                         if (errorMsg.substring(errorMsg.indexOf('ENTITY_TRACE'),errorMsg.indexOf('ENTITY_TRACE')+20).contains('true')) {
                             errorMsg = errorMsg.replace('ENTITY_TRACE = true','Id IN (SELECT TracedEntityId FROM TraceFlag)');
                         }else {
@@ -185,11 +175,9 @@ public with sharing class ctc_ctcApexTestCoverageController {
             string query = 'SELECT Id, NumLinesCovered, NumLinesUncovered, ApexClassorTriggerId, ApexClassorTrigger.Name FROM ApexCodeCoverageAggregate ORDER BY ApexClassorTrigger.Name';
             Http http = new Http();
             HttpRequest request = new HttpRequest();
-            //request.setEndpoint('https://brave-badger-oaqjb6-dev-ed.my.salesforce.com/services/data/v53.0/sobjects/Account/listviews/00B8c00000PF56PEAT/describe');
             query = query.replace(', ','+,+');
             string callout = string.format('{0}{1}{2}{3}',new string[]{'callout:',namedCred,'/services/data/v53.0/tooling/query/?q=' , (query.replace(' ', '+'))});
             System.debug(callout);
-            //request.setEndpoint('callout:TestCovCred/services/data/v53.0/sobjects/Account/listviews/00B8c00000PF56PEAT/describe');
             request.setEndpoint(callout);
             request.setMethod('GET');
             //request.setHeader('Content-Type', 'application/json;charset=UTF-8');
