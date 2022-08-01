@@ -4,12 +4,12 @@
 import { LightningElement, track } from 'lwc';
 import { loadScript } from "lightning/platformResourceLoader";
 import workbook from "@salesforce/resourceUrl/writeExcel";
-import getClasses from "@salesforce/apex/ctc_ctcApexTestCoverageController.getClasses";
-import getListviews from "@salesforce/apex/ctc_ctcApexTestCoverageController.getListviews";
-import getTestRunResults from "@salesforce/apex/ctc_ctcApexTestCoverageController.getTestRunResults";
-import getTestClasses from "@salesforce/apex/ctc_ctcApexTestCoverageController.getTestClasses";
-import getTestCoverage from "@salesforce/apex/ctc_ctcApexTestCoverageController.getTestCoverage";
-import getTriggers from "@salesforce/apex/ctc_ctcApexTestCoverageController.getTriggers";
+import getClasses from "@salesforce/apex/jc_ApexTestCoverageController.getClasses";
+import getListviews from "@salesforce/apex/jc_ApexTestCoverageController.getListviews";
+import getTestRunResults from "@salesforce/apex/jc_ApexTestCoverageController.getTestRunResults";
+import getTestClasses from "@salesforce/apex/jc_ApexTestCoverageController.getTestClasses";
+import getTestCoverage from "@salesforce/apex/jc_ApexTestCoverageController.getTestCoverage";
+import getTriggers from "@salesforce/apex/jc_ApexTestCoverageController.getTriggers";
 //import COLORS from '@salesforce/resourceUrl/colors'
 
 //follow this link for instructions on auth provider, connected apps, and named creds: https://mukulmahawariya11.medium.com/beginners-guide-to-api-calls-from-salesforce-lightning-web-components-65af2ab7c629
@@ -230,10 +230,6 @@ export default class Ctc_ctcApexTestCoverage extends LightningElement {
             for(let res of response){
                 classIds.push(res.Id);
             }
-            //console.log("###Response : " + response);
-            // let parsedData = JSON.parse(response);
-            // this.imageURL = parsedData.query;
-            // console.log(this.imageURL);
             return getTestCoverage({classOrTriggerIds: classIds, namedCred: this.namedCred});
         }).then((response) => {
             let i = 0;
@@ -386,11 +382,6 @@ export default class Ctc_ctcApexTestCoverage extends LightningElement {
     // calling the download function from xlsxMain.js
     async download() {
         let _self = this;
-        // When passing `objects` and `schema`.
-        // await writeXlsxFile(_self.objectsData, {
-        //     schema: _self.schemaObj,
-        //     fileName: 'test.xlsx'
-        // })
 
         console.log("doc gen");
         let data = [_self.topRow, _self.headerRow];
